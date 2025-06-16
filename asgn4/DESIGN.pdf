@@ -1,0 +1,285 @@
+Bonifacio Miranda
+4/29/2021
+CSE 13S
+
+Asignment 4: The Circumnavigations of Denver Long
+
+tsp.c:
+        // Had help from jtennant
+    void dfs (Graph *G, uint32_t v, Path *curr , Path * shortest, char * cities [] , FILE * outfile, bool verbose) {
+        number_of_recursions++;
+        graph_mark_visited(G, v);
+        path_push_vertex(curr, v, G);
+        uint32_t trash;     // Getting rid of uneeded variables
+
+        // checks if vertex has been visited once and reachable
+            // if this hamiltonain path is shorter than any previous hamiltonian paths
+                // if verbose printing enabled then print path
+                // update shortest path
+
+        for (uint32_t u = 0; u < graph_vertices(G); u++) {
+            // printf("considering path from %s to %s ...\n", cities[v], cities[u]);        // Print statement for debugging
+            bool not_visited = graph_visited(G, u) == false;
+            bool not_the_same = v != u;
+            bool edge_exists = graph_has_edge(G, v, u);
+            bool still_shorter = path_length(curr) + graph_edge_weight(G, v, u) < path_length(shortest);
+            bool not_found = path_length(shortest) == 0;
+            // printf("%d %d %d %d %d\n", not_visited, not_the_same, edge_exists, still_shorter, not_found);        // Print statement for debugging
+            if ((not_visited && not_the_same && edge_exists) && (still_shorter || not_found)) {
+                // printf("going from %s to %s ...\n", cities[v], cities[u]);           // Print statement for debugging
+                dfs(G, u, curr, shortest, cities, outfile, verbose);
+            }
+        }
+        // printf("all paths from %s exausted. going back ...\n", cities[v]);       // Print statement for debugging
+        graph_mark_unvisited(G, v);
+        path_pop_vertex(curr, &trash, G);
+        // printf("path after pop:\n");         // Print statement for debugging
+        // path_print(curr, outfile, cities);           // Print statement for debugging
+        return;
+    }
+
+
+graph.c:
+    struct Graph {
+        uint32_t vertices;
+        bool undirected;
+        bool visited[VERTICES];
+        uint32_t matrix[VERTICES][VERTICES];    
+    };
+
+    Graph *graph_create(uint32_t vertices, bool undirected) {
+        printf("graph_create\n");
+
+        Graph *g = (Graph*) malloc(sizeof(Graph));
+        g->vertices = vertices;
+        g->undirected = undirected;
+        for (uint32_t i =0; i < VERTICES; i++) {
+            g->visited[i] = false;
+            for (uint32_t j = 0; j < VERTICES; i++) {
+                g->matrix[i][j];
+            }
+        }
+        return g;
+    }
+
+    void graph_delete(Graph **G) {
+        printf("graph_delete\n");
+
+        if (*G && (*G)->matrix) {
+            free((*G)->matrix);
+            free(*G);
+            *G = NULL;
+        }
+        return;
+    }
+
+    uint32_t graph_vertices(Graph *G) {
+        printf("graph_vertices\n");
+
+        return G->vertices;
+    }
+
+    bool graph_add_edge(Graph *G, uint32_t i, uint32_t j, uint32_t k) {
+        printf("graph_add_edge\n");
+
+        matrix[i][j] = k
+        matrix[j][i] = k
+    }
+
+    bool graph_has_edge(Graph *G, uint32_t i, uint32_t j) {
+        printf("graph_has_edge\n");
+
+        i to j > 0 has an edge
+        if matrix[i][j] > 0
+            has an edge
+        if i to j has no edge return 0
+    }
+
+    uint32_t graph_edge_weight(Graph *G, uint32_t i, uint32_t j) {
+        printf("graph_edge_weight\n");
+    }
+
+    bool graph_visited(Graph *G, uint32_t v) {
+        printf("graph_visited\n");
+
+        if (G->visited[v] == 1){
+            return true;
+        }
+        return false;
+    }
+
+    void graph_mark_visited(Graph *G, uint32_t v) {
+        printf("graph_mark_visited\n");
+
+        if (G->visited[v] < VERTICES) {
+            G->vertices -= 1;
+            v = G->visited[G->visited];
+            return true;
+        }
+        return false;
+    }
+
+    void graph_mark_unvisited(Graph *G, uint32_t v) {
+        printf("graph_mark_unvisited\n");
+
+        if (v < VERTICES) {
+            return false;
+        }
+        return;
+    }
+
+    void graph_print(Graph *G) {
+        printf("graph_print\n");
+
+        printf("[");
+        for (uint32_t i = 0; i < G->vertices; i++) {
+            printf("%" PRId64, G->G[i]);
+            if (i + 1 != G->vertices) {
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+
+
+path.c:
+    struct Path {
+        Stack *vertices;
+        uint32_t length;
+    };
+
+    Path *path_create(void) {
+        printf("path_create\n");
+        sum of weights
+    }
+
+    void path_delete(Path **p) {
+        printf("path_delete\n");
+    }
+
+    bool path_push_vertex(Path *p, uint32_t v, Graph *G) {
+        printf("path_push_vertex\n");
+        current vertex 
+        last_vertex = stack_peak()
+        if the stack is empty 
+            length += weight(last, current)
+        
+    }
+
+    bool path_pop_vertex(Path *p, uint32_t *v, Graph *G) {
+
+       // size of the stack vertices
+    }
+
+    uint32_t path_vertices(Path *p) {
+
+        stack_size
+    }
+
+    uint32_t path_length(Path *p) {
+    
+        sum of the edges traversed so far
+    }
+
+    void path_copy(Path *dst, Path *src) {
+        // check if destination exists and then copies it to the stack
+    }
+
+    void path_print(Path *p, FILE *outfile, char *cities[]) {
+        // prints for testing purposes of the path
+        fprintf(outfile, "Path length: %d\n", p->length); 
+        fprintf(outfile, "Path: ");
+        stack_print(p->vertices, outfile, cities); 
+    }
+
+stack.c:
+
+    Stack *stack_create(uint32_t capacity) {
+        // Followed closely from asgn 3
+        // Allocates memory and createss a stck 
+        Stack *s = (Stack *) malloc(sizeof(Stack));
+        if (s) {
+            s->top = 0;
+            s->capacity = capacity;
+            s->items = (uint32_t *) calloc(capacity, sizeof(uint32_t)); // void pointer to memory location
+            if (!s->items) {
+                free(s);
+                s = NULL; // sets s to null
+            }
+        }
+        return s;
+    }
+
+    void stack_delete(Stack **s) {
+
+        // deletes stack followeed closely from asgn 3
+        if (*s && (*s)->items) {
+            free((*s)->items);
+            free(*s);
+            *s = NULL;
+        }
+        return;
+    }
+
+    bool stack_empty(Stack *s) {
+
+        // empties stack followeed closely from asgn 3
+        if  (s->top == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    bool stack_full(Stack *s) {
+
+        // full stack followeed closely from asgn 3
+        if (s->top == s->capacity) {
+            return true;
+        }
+        return false;
+    }
+
+    uint32_t stack_size(Stack *s) {
+        
+        // Size of stack
+    }
+
+    bool stack_push(Stack *s, uint32_t x) {
+
+        // Followed closely from asgn 3
+        if (stack_full(s)) {
+            return false;    
+        }
+        s->items[s->top] = x;
+        s->top += 1;
+        return true;
+    }
+
+    bool stack_peek(Stack *s, uint32_t *x) {
+
+        // Followed closely from asgn 3 
+        // Checks if s is on top and will go to the following s from that
+        if (s->top) {
+            *x = s->items[s->top - 1];
+            return true;
+        }
+        return false;
+    }
+
+    bool stack_pop(Stack *s, uint32_t *x) {
+
+        // Followed closely from asgn 3 
+        if (stack_full(s)) {
+            return false;    
+        }
+        s->top -= 1;
+        *x = s->items[s->top];
+        return true;
+    }
+
+    void stack_copy(Stack *dst, Stack *src) {
+
+        // Followed closely from asgn 3 
+        // Checks if there is a destination and will index that to items
+    }
+    
